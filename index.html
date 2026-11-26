@@ -1,11 +1,68 @@
+<!--
+  ===========================================================================
+  index.html — Plannova 的唯一页面
+  ===========================================================================
+
+  【这个文件干什么】
+  只负责"骨架"：告诉浏览器页面上有哪些区域、谁装谁。
+  不写任何样式（样式在 css/），不写任何逻辑（逻辑在 js/）。
+
+  【布局方案：B — 三栏 + 可折叠预览抽屉】
+  ┌─────────────────────────────────────────────────┐
+  │  顶栏 .topbar   （项目名 · 导出 · 主题切换）        │
+  ├──────────┬──────────────────────────┬───────────┤
+  │ .sidebar │  .editor                 │ .preview  │
+  │ 章节导航  │  编辑区                   │ 预览抽屉   │
+  │ 240px    │  1fr（自动占满）           │ 48→380px  │
+  └──────────┴──────────────────────────┴───────────┘
+
+  【怎么写】
+  1. 外层 <div class="app"> 作为 grid 容器，三列由 layout.css 定义
+  2. 先写"静态骨架"：把 9 个章节的标题、输入框位置都写死一份
+     —— 目的是让页面在没有 JS 时也完整可见，方便调样式
+  3. 所有需要 JS 操控的地方，都加 data-* 属性当"钩子"，
+     不要用 id 到处抓（见下方命名规约）
+  4. <script type="module" src="js/main.js"> 放最后
+
+  【data-* 钩子命名规约 —— 非常重要，你的 JS 全靠它】
+    data-action="xxx"   某个可点击的按钮/元素，值是动作名
+                        例：data-action="toggle-preview"
+                        例：data-action="new-project"
+    data-chapter="key"  章节容器，值是章节 key（overview / scope / stack ...）
+    data-field="name"   输入控件，值是字段名
+                        例：data-field="title"  data-field="positioning"
+    data-project-id     当前项目 id（挂在 .app 上）
+
+  【编辑区里每类章节长什么样】
+    9 个章节用的控件类型不一样，写的时候要区分：
+      - 键值类（项目概览）→ 一行一个 label + input，用 <input>/<textarea>
+      - 表格类（需求边界 / 风险 / 迭代计划）→ 用真正的 <table>
+      - 列表类（不做清单 / 测试清单）→ <ul> + 可增删条目
+      - 纯文本类（备忘）→ 一个 <textarea>
+    具体字段见 resources/plan.md 每一节的内容。
+
+  【常见坑】
+  - <html lang="zh-CN"> 中间不能有空格（你现在写成了 "zh - CN"，是错的）
+  - 三栏要各自滚动，就必须给 html/body/.app/三栏都设 height，
+    这条链子写在 layout.css 里，index.html 这边不用管
+  - 不要在内联 style 里写颜色，全走 CSS 变量
+
+  【和别的文件的关系】
+    css/tokens.css  → 颜色/间距/字号的变量，被下面两个 @import
+    css/base.css    → 重置 + 基础排版
+    css/layout.css  → 三栏骨架、抽屉过渡、响应式
+    js/store.js     → 数据从哪来、存到哪去
+    js/render.js    → 数据怎么变成这里写的 HTML
+    js/main.js      → 事件绑在这里的元素上
+-->
 <!DOCTYPE html>
-<html lang="zh - CN">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plannova</title>
 </head>
 <body>
-    
+
 </body>
 </html>

@@ -1,0 +1,86 @@
+/* ===========================================================================
+   tokens.css — 设计变量（Design Tokens）
+   ===========================================================================
+
+   【这个文件干什么】
+   存放"所有会重复出现的原始值"：颜色、间距、字号、圆角、层级。
+   它是整个样式系统的最底层，被 base.css 和 layout.css 依赖。
+
+   【为什么要单独一层】
+   假设你以后想把主色从紫色改成绿色 —— 只改这里 1 行就全站生效。
+   如果不抽出来，你会去 20 个地方手动改，还一定会漏。
+   这种做法叫 Design Token，所有正经设计系统都这么干。
+
+   【怎么写】
+   全部写在 :root 里，用 --xxx 命名，分组成块，每块加一行注释。
+   命名建议：--color-<用途>、--space-<尺寸>、--font-size-<尺寸>、
+            --radius-<尺寸>、--z-<层级>
+
+   参考分组（先写这些就够，不要一次写全）：
+
+   :root {
+     \/\* 颜色 · 背景 *\/
+     --color-bg:            ;
+     --color-surface:       ;   面板 / 卡片底
+     --color-surface-hover: ;
+
+     \/\* 颜色 · 文字 *\/
+     --color-text:          ;   正文
+     --color-text-muted:    ;   次要说明
+     --color-text-faint:    ;   占位符 / 禁用
+
+     \/\* 颜色 · 描边与强调 *\/
+     --color-border:        ;
+     --color-accent:        ;   主色（按钮、选中态）
+     --color-accent-faint:  ;   主色的低饱和版本（选中背景）
+
+     \/\* 间距（4 的倍数，保证视觉节奏统一）*\/  <-- 注意转义，实际写时不带反斜杠
+     --space-1: 4px;
+     --space-2: 8px;
+     --space-3: 12px;
+     --space-4: 16px;
+     --space-6: 24px;
+     --space-8: 32px;
+
+     \/\* 字号 *\/
+     --font-size-xs:  12px;
+     --font-size-sm:  13px;
+     --font-size-md:  14px;
+     --font-size-lg:  16px;
+     --font-size-xl:  20px;
+
+     \/\* 圆角 *\/
+     --radius-sm: 4px;
+     --radius-md: 8px;
+     --radius-lg: 12px;
+
+     \/\* 动效时长（抽屉过渡会用到）*\/  <-- 同样去掉反斜杠
+     --duration-fast: 150ms;
+     --duration-base: 250ms;
+
+     \/\* 层级（谁是浮在上面的）*\/   <-- 去掉反斜杠
+     --z-sidebar: 10;
+     --z-topbar:  20;
+     --z-drawer:  30;
+   }
+
+   【主题切换怎么做 —— 这是这个文件最大的价值】
+   把浅色写在 :root，深色写在 [data-theme="dark"] 里，只覆盖颜色：
+
+   :root { --color-bg: #fff; --color-text: #1a1a1a; ... }
+   [data-theme="dark"] { --color-bg: #16161a; --color-text: #e8e8ea; ... }
+
+   JS 只需要一句：document.documentElement.dataset.theme = 'dark'
+   —— 整个页面瞬间换色，因为所有颜色都指向变量。
+
+   【常见坑】
+   - 变量名写错不会报错，只会静默失效（元素变成默认样式），
+     排查时先看 DevTools 里变量有没有解析成功
+   - 不要在 tokens.css 里写任何具体元素选择器（div / .sidebar），
+     这个文件只放变量
+   - CSS 变量区分大小写，--color-Bg 和 --color-bg 是两个东西
+   - 本文件注释用 /* *\/ 包裹，别混用 //（CSS 不支持 // 注释）
+
+   【和别的文件的关系】
+   被 base.css / layout.css @import；它自己不 import 任何东西。
+   =========================================================================== */

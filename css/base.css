@@ -1,0 +1,64 @@
+/* ===========================================================================
+   base.css — 重置与基础排版
+   ===========================================================================
+
+   【这个文件干什么】
+   把所有浏览器的"默认样式差异"抹平，再定下全站通用的文字和控件基础样式。
+   这一层不涉及任何具体布局（三栏怎么排是 layout.css 的事）。
+
+   【为什么要重置】
+  不同浏览器给 h1 / p / ul / input 的默认 margin、font 都不一样。
+   不重置的话，你的页面在 Chrome 好看、在别的浏览器就歪了。
+
+   【怎么写，按这个顺序来】
+
+   1) @import 变量
+        @import url('./tokens.css');
+      必须放文件第一行（@import 只能出现在开头，否则不生效）
+
+   2) 盒模型重置
+        *, *::before, *::after { box-sizing: border-box; }
+      —— 这一条改变一切：写 width: 100% 时，padding 不会再撑破容器。
+         不写这个，你会遇到"明明设了 100% 为什么还是溢出"
+
+   3) 默认间距清零
+        body, h1, h2, p, ul, ol, figure { margin: 0; }
+        ul, ol { padding: 0; list-style: none; }
+
+   4) 页面基础
+        html, body { height: 100%; }        <-- 高度链的起点，别漏
+        body {
+          font-family: <系统字体栈>;
+          font-size: var(--font-size-md);
+          line-height: 1.6;
+          color: var(--color-text);
+          background: var(--color-bg);
+          -webkit-font-smoothing: antialiased;
+        }
+
+      字体栈建议（不引外部字体，加载快、中文显示稳）：
+        system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif
+      等宽字体（导出预览会用到）：
+        ui-monospace, "Cascadia Code", "Consolas", monospace
+
+   5) 表单控件继承
+        input, textarea, select, button { font: inherit; color: inherit; }
+      —— 不写这行，你输入框里的字会是浏览器默认的 13px 宋体，特别突兀
+
+   6) 焦点样式（无障碍，别去掉 outline）
+        建议 :focus-visible { outline: 2px solid var(--color-accent); }
+      而不是简单粗暴地 outline: none —— 那样键盘用户就没法用了
+
+   7) 滚动条美化（可选，但能让侧栏更干净）
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+
+   【常见坑】
+   - @import 路径写错是静默失败，页面会全白，先按 F12 看 Network 有没有 404
+   - 给 * 设 box-sizing 时不要漏掉 *::before 和 *::after
+   - 不要在这里写 .sidebar / .app 之类具体组件的样式，那是 layout.css 的活
+
+   【和别的文件的关系】
+     @import tokens.css
+     → 被 layout.css / index.html 顺序引用
+   =========================================================================== */
