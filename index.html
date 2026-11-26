@@ -36,10 +36,29 @@
   【编辑区里每类章节长什么样】
     9 个章节用的控件类型不一样，写的时候要区分：
       - 键值类（项目概览）→ 一行一个 label + input，用 <input>/<textarea>
-      - 表格类（需求边界 / 风险 / 迭代计划）→ 用真正的 <table>
-      - 列表类（不做清单 / 测试清单）→ <ul> + 可增删条目
-      - 纯文本类（备忘）→ 一个 <textarea>
+      - 表格类（需求边界 / 技术选型 / 风险 / 迭代计划）→ 用真正的 <table>
+      - 列表类（工程准备 / 测试清单）→ <ul> + 可增删条目
+      - 纯文本类（数据结构 / 备忘）→ 一个 <textarea>
     具体字段见 resources/plan.md 每一节的内容。
+
+  【固定行 vs 自由行 —— 写表格和列表前必须先判定】
+    同样是"表格"，有两种完全不同的性质，别搞混：
+
+    · 固定行：行数和"行是什么"都由我们定死，用户只能填内容。
+      不提供"加一行 / 删一行"按钮，第一列往往是纯文字标签。
+      data-field 用点号分层，如 lang.choice / lang.reason
+      → 第 3 节 技术选型（语言 / 构建 / 存储 / 样式 / 第三方库）
+      → 第 6 节 迭代计划（M1 ~ M6）
+
+    · 自由行：行数和条目都由用户自己增删，每行是一条同类记录。
+      需要 data-row-id、data-action="add-row"、"remove-row" 按钮
+      → 第 2 节 需求边界（P0 / P1 / 不做，三张表）
+      → 第 5 节 难点与风险
+      → 第 7 节 工程准备
+      → 第 8 节 测试清单（三组）
+
+    判定口诀：这一行的"标题"是用户想的，还是我们预设的？
+      预设 → 固定行；用户想的 → 自由行。
 
   【常见坑】
   - <html lang="zh-CN"> 中间不能有空格（你现在写成了 "zh - CN"，是错的）
@@ -63,6 +82,104 @@
     <title>Plannova</title>
 </head>
 <body>
+<div class="app" data-project-id="">
+  <header class="topbar">
+    <input data-field="title">项目名称</input>
+    <button data-action="export">导出</button>
+    <button data-action="toggle-theme">主题</button>
+  </header>
+  <aside class="sidebar">
+    <ul class="chapter-nav">
+      <li data-action="switch-chapter" data-chapter="overview" class="is-active">1 项目概览</li>
+      <li data-action="switch-chapter" data-chapter="scope">2 需求边界</li>
+      <li data-action="switch-chapter" data-chapter="stack">3 技术选型</li>
+      <li data-action="switch-chapter" data-chapter="model">4 数据结构</li>
+      <li data-action="switch-chapter" data-chapter="risk">5 难点与风险</li>
+      <li data-action="switch-chapter" data-chapter="plan">6 迭代计划</li>
+      <li data-action="switch-chapter" data-chapter="setup">7 工程准备</li>
+      <li data-action="switch-chapter" data-chapter="test">8 测试清单</li>
+      <li data-action="switch-chapter" data-chapter="notes">9 备忘</li>
+    </ul>
+  </aside>
+  <main class="editor">
+    <section data-chapter="overview">
+      <h2>1.项目概览</h2>
+      <label class="field">
+        <span>项目名称</span>
+        <input data-field="name" type="text">
+      </label>
+      <label class="field">
+        <span>一句话定位</span>
+        <textarea data-field="positioning" rows="2"></textarea>
+      </label>
+      <label class="field">
+        <span>类型</span>
+        <select data-field="type">
+          <option>课内练习</option>
+          <option>简历项目</option>
+          <option>个人作品</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>完成标准</span>
+        <textarea data-field="done" rows="3"></textarea>
+      </label>
+    </section>
 
+    <section data-chapter="stack">
+      <h2>3.技术选型</h2>
+      <table data-rows="stack">
+        <thead><tr><th>项</th><th>选择</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>语言</td>
+            <td><input data-field="lang.choice"></td>
+            <td><input data-field="lang.reason"></td>
+          </tr>
+          <tr>
+            <td>构建</td>
+            <td><input data-field="build.choice"></td>
+            <td><input data-field="build.reason"></td>
+          </tr>
+          <tr>
+            <td>存储</td>
+            <td><input data-field="storage.choice"></td>
+            <td><input data-field="storage.reason"></td>
+          </tr>
+          <tr>
+            <td>样式</td>
+            <td><input data-field="style.choice"></td>
+            <td><input data-field="style.reason"></td>
+          </tr>
+          <tr>
+            <td>第三方库</td>
+            <td><input data-field="libs.choice"></td>
+            <td><input data-field="libs.reason"></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section data-chapter="model">
+      <h2>4.数据结构</h2>
+      <label class="field">
+        <span>核心数据结构</span>
+        <textarea data-field="code" rows="12" spellcheck="false"></textarea>
+      </label>
+      <label class="field">
+        <span>目录结构</span>
+        <textarea data-field="directory" rows="12" spellcheck="false"></textarea>
+      </label>
+      <label class="field">
+        <span>数据流向</span>
+        <textarea data-field="flow" rows="4"></textarea>
+      </label>
+    </section>
+  </main>
+  <aside class="preview">
+    <button data-action="toggle-preview" class="preview-handle">预览</button>
+    <div class="preview-body"></div>
+  </aside>
+</div>
 </body>
 </html>
